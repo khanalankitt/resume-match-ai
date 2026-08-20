@@ -1,11 +1,6 @@
-"use client";
-
 import Link from "next/link";
-import { useState } from "react";
 
 export default function LoginPage() {
-  const [mode, setMode] = useState<"login" | "signup">("login");
-
   return (
     <div className="flex min-h-screen flex-col">
       {/* Nav */}
@@ -21,91 +16,19 @@ export default function LoginPage() {
       </nav>
 
       <main className="flex flex-1 items-center justify-center px-6 py-16">
-        <div className="w-full max-w-sm">
+        <div className="w-full max-w-sm text-center">
           <h1 className="font-display text-2xl font-semibold tracking-tight">
-            {mode === "login" ? "Welcome back" : "Create your account"}
+            Log in to get started
           </h1>
           <p className="mt-2 text-sm text-ink/60">
-            {mode === "login"
-              ? "Log in to access your analysis history."
-              : "Sign up to start analyzing your resume."}
+            Analyze your resume against any job description in seconds.
           </p>
 
-          <form
-            onSubmit={(e) => e.preventDefault()}
-            className="mt-8 space-y-4"
-          >
-            {mode === "signup" && (
-              <div>
-                <label
-                  htmlFor="name"
-                  className="mb-1 block text-sm font-medium"
-                >
-                  Name
-                </label>
-                <input
-                  id="name"
-                  type="text"
-                  required
-                  className="w-full rounded border border-ink/20 bg-white px-3 py-2.5 text-sm outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20"
-                  placeholder="Jane Smith"
-                />
-              </div>
-            )}
-
-            <div>
-              <label
-                htmlFor="email"
-                className="mb-1 block text-sm font-medium"
-              >
-                Email
-              </label>
-              <input
-                id="email"
-                type="email"
-                required
-                className="w-full rounded border border-ink/20 bg-white px-3 py-2.5 text-sm outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20"
-                placeholder="you@example.com"
-              />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="mb-1 block text-sm font-medium"
-              >
-                Password
-              </label>
-              <input
-                id="password"
-                type="password"
-                required
-                className="w-full rounded border border-ink/20 bg-white px-3 py-2.5 text-sm outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20"
-                placeholder="••••••••"
-              />
-            </div>
-
-            <button
-              type="submit"
-              className="w-full rounded bg-cobalt py-2.5 text-sm font-medium text-white shadow-paper-sm transition-colors hover:bg-cobalt-hover"
-            >
-              {mode === "login" ? "Log in" : "Sign up"}
-            </button>
-          </form>
-
-          {/* Divider */}
-          <div className="my-6 flex items-center gap-3">
-            <div className="h-px flex-1 bg-ink/10" />
-            <span className="text-xs text-ink/40">or</span>
-            <div className="h-px flex-1 bg-ink/10" />
-          </div>
-
-          {/* Social login placeholder */}
           <button
             type="button"
-            className="flex w-full items-center justify-center gap-2 rounded border border-ink/20 bg-white py-2.5 text-sm font-medium transition-colors hover:border-ink/30"
+            className="mt-8 flex w-full items-center justify-center gap-3 rounded border border-ink/20 bg-white py-3 text-sm font-medium shadow-paper-sm transition-colors hover:border-ink/30"
           >
-            <svg className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
               <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" />
               <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" />
@@ -114,31 +37,8 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          {/* Toggle mode */}
-          <p className="mt-6 text-center text-sm text-ink/60">
-            {mode === "login" ? (
-              <>
-                Don&apos;t have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => setMode("signup")}
-                  className="font-medium text-cobalt transition-colors hover:text-cobalt-hover"
-                >
-                  Sign up
-                </button>
-              </>
-            ) : (
-              <>
-                Already have an account?{" "}
-                <button
-                  type="button"
-                  onClick={() => setMode("login")}
-                  className="font-medium text-cobalt transition-colors hover:text-cobalt-hover"
-                >
-                  Log in
-                </button>
-              </>
-            )}
+          <p className="mt-10 text-xs text-ink/40">
+            By continuing, you agree to our terms of service.
           </p>
         </div>
       </main>
