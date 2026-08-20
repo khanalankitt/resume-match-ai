@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colors — "The Recruiter's Desk" */
+  --color-ink: #12141C;
+  --color-paper: #F1F1EC;
+  --color-cobalt: #2B4CFF;
+  --color-cobalt-hover: #2340CC;
+  --color-green: #2FA84F;
+  --color-coral: #E8543E;
+  --color-amber: #F2A93C;
+
+  /* Dark mode — "Night desk" */
+  --color-dark-ink: #15171D;
+  --color-dark-paper: #EDEAE1;
+  --color-dark-cobalt: #5C7CFF;
+  --color-dark-green: #3FC46A;
+  --color-dark-coral: #FF7A66;
+  --color-dark-amber: #FFC65C;
+
+  /* Font families */
+  --font-display: "Fraunces", ui-serif, Georgia, serif;
+  --font-body: "Public Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* Base layer */
+html {
+  font-family: var(--font-body);
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
+
+/* Utility: paper shadow (1px offset, no blur) */
+@utility shadow-paper {
+  box-shadow: 2px 2px 0 var(--color-ink);
+}
+
+@utility shadow-paper-sm {
+  box-shadow: 1px 1px 0 var(--color-ink);
+}
+
+/* Utility: highlighter underline stroke */
+@utility highlighter-green {
+  background-image: linear-gradient(transparent 60%, rgba(47, 168, 79, 0.3) 60%);
+}
+
+@utility highlighter-coral {
+  background-image: linear-gradient(transparent 60%, rgba(232, 84, 62, 0.3) 60%);
+}
+
+@utility highlighter-amber {
+  background-image: linear-gradient(transparent 60%, rgba(242, 169, 60, 0.3) 60%);
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-paper);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-ink);
+  border-radius: 3px;
+}
+
+/* Focus ring */
+:focus-visible {
+  outline: 2px solid var(--color-cobalt);
+  outline-offset: 2px;
+}
