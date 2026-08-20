@@ -37,11 +37,11 @@ export default function AnalyzePage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Nav */}
-      <nav className="border-b border-ink/10 px-6 py-4">
+      <nav className="border-b border-ink/10 px-4 py-3 sm:px-6 sm:py-4">
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Link
             href="/"
-            className="font-display text-xl font-semibold tracking-tight"
+            className="font-display text-lg font-semibold tracking-tight sm:text-xl"
           >
             AI Resume Match
           </Link>
@@ -55,28 +55,28 @@ export default function AnalyzePage() {
       </nav>
 
       {/* Main content */}
-      <main className="flex flex-1 flex-col px-6 py-8">
+      <main className="flex flex-1 flex-col px-4 py-6 sm:px-6 sm:py-8">
         <div className="mx-auto w-full max-w-6xl">
           {/* Title */}
-          <div className="mb-8">
-            <h1 className="font-display text-2xl font-semibold tracking-tight sm:text-3xl">
+          <div className="mb-6 sm:mb-8">
+            <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl md:text-3xl">
               Compare your resume to a job posting
             </h1>
             <p className="mt-1 text-sm text-ink/50">
-              Drop your resume on the left, paste the job description on the right.
+              Upload your resume and paste the job description below.
             </p>
           </div>
 
           {/* Two paper layout */}
-          <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+          <div className="grid grid-cols-1 gap-4 sm:gap-6 lg:grid-cols-2">
             {/* Resume panel */}
-            <div className="rounded border border-ink/10 bg-white p-5 shadow-paper-sm">
-              <span className="mb-4 inline-block font-mono text-xs font-medium uppercase tracking-widest text-ink/40">
+            <div className="rounded border border-ink/10 bg-white p-4 shadow-paper-sm sm:p-5">
+              <span className="mb-3 inline-block font-mono text-xs font-medium uppercase tracking-widest text-ink/40 sm:mb-4">
                 Your Resume
               </span>
 
               {resumeFile ? (
-                <div className="flex items-center gap-3 rounded border border-ink/10 bg-paper px-4 py-3">
+                <div className="flex items-center gap-3 rounded border border-ink/10 bg-paper px-3 py-2.5 sm:px-4 sm:py-3">
                   <svg
                     className="h-5 w-5 shrink-0 text-cobalt"
                     fill="none"
@@ -112,7 +112,7 @@ export default function AnalyzePage() {
                   onDragOver={handleDragOver}
                   onDragLeave={handleDragLeave}
                   onClick={() => fileInputRef.current?.click()}
-                  className={`flex cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed px-6 py-16 text-center transition-colors ${
+                  className={`flex cursor-pointer flex-col items-center justify-center rounded border-2 border-dashed px-4 py-12 text-center transition-colors sm:px-6 sm:py-16 ${
                     isDragging
                       ? "border-cobalt bg-cobalt/5"
                       : "border-ink/15 hover:border-ink/30"
@@ -150,14 +150,14 @@ export default function AnalyzePage() {
             </div>
 
             {/* Job description panel */}
-            <div className="rounded border border-ink/10 bg-white p-5 shadow-paper-sm">
-              <span className="mb-4 inline-block font-mono text-xs font-medium uppercase tracking-widest text-ink/40">
+            <div className="rounded border border-ink/10 bg-white p-4 shadow-paper-sm sm:p-5">
+              <span className="mb-3 inline-block font-mono text-xs font-medium uppercase tracking-widest text-ink/40 sm:mb-4">
                 Job Description
               </span>
 
               {jobDescription ? (
                 <div className="relative">
-                  <div className="max-h-[400px] overflow-y-auto rounded border border-ink/10 bg-paper p-4">
+                  <div className="max-h-[250px] overflow-y-auto rounded border border-ink/10 bg-paper p-3 sm:max-h-[400px] sm:p-4">
                     <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/70">
                       {jobDescription}
                     </p>
@@ -175,18 +175,18 @@ export default function AnalyzePage() {
                   value={jobDescription}
                   onChange={(e) => setJobDescription(e.target.value)}
                   placeholder="Paste the full job description here..."
-                  className="h-[300px] w-full resize-none rounded border border-ink/15 bg-paper p-4 text-sm leading-relaxed text-ink/70 outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20"
+                  className="h-[200px] w-full resize-none rounded border border-ink/15 bg-paper p-3 text-sm leading-relaxed text-ink/70 outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 sm:h-[300px] sm:p-4"
                 />
               )}
             </div>
           </div>
 
           {/* Analyze button */}
-          <div className="mt-8 flex justify-center">
+          <div className="mt-6 flex justify-center sm:mt-8">
             <button
               type="button"
               disabled={!canAnalyze}
-              className={`inline-flex items-center gap-2 rounded px-8 py-3 text-sm font-medium shadow-paper transition-colors ${
+              className={`inline-flex w-full items-center justify-center gap-2 rounded px-6 py-3 text-sm font-medium shadow-paper transition-colors sm:w-auto sm:px-8 ${
                 canAnalyze
                   ? "bg-cobalt text-white hover:bg-cobalt-hover"
                   : "cursor-not-allowed bg-ink/10 text-ink/30"

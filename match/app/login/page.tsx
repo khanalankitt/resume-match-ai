@@ -4,20 +4,20 @@ export default function LoginPage() {
   return (
     <div className="flex min-h-screen flex-col">
       {/* Nav */}
-      <nav className="border-b border-ink/10 px-6 py-4">
+      <nav className="border-b border-ink/10 px-4 py-3 sm:px-6 sm:py-4">
         <div className="mx-auto max-w-5xl">
           <Link
             href="/"
-            className="font-display text-xl font-semibold tracking-tight"
+            className="font-display text-lg font-semibold tracking-tight sm:text-xl"
           >
             AI Resume Match
           </Link>
         </div>
       </nav>
 
-      <main className="flex flex-1 items-center justify-center px-6 py-16">
+      <main className="flex flex-1 items-center justify-center px-4 py-12 sm:px-6 sm:py-16">
         <div className="w-full max-w-sm text-center">
-          <h1 className="font-display text-2xl font-semibold tracking-tight">
+          <h1 className="font-display text-xl font-semibold tracking-tight sm:text-2xl">
             Log in to get started
           </h1>
           <p className="mt-2 text-sm text-ink/60">
@@ -26,7 +26,7 @@ export default function LoginPage() {
 
           <button
             type="button"
-            className="mt-8 flex w-full items-center justify-center gap-3 rounded border border-ink/20 bg-white py-3 text-sm font-medium shadow-paper-sm transition-colors hover:border-ink/30"
+            className="mt-6 flex w-full items-center justify-center gap-3 rounded border border-ink/20 bg-white py-3 text-sm font-medium shadow-paper-sm transition-colors hover:border-ink/30 sm:mt-8"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24" fill="currentColor">
               <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" />
@@ -37,7 +37,7 @@ export default function LoginPage() {
             Continue with Google
           </button>
 
-          <p className="mt-10 text-xs text-ink/40">
+          <p className="mt-8 text-xs text-ink/40 sm:mt-10">
             By continuing, you agree to our terms of service.
           </p>
         </div>
