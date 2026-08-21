@@ -1,6 +1,11 @@
 import Link from "next/link";
+import { auth } from "@/auth";
+import { signOutAction } from "@/app/actions/auth";
 
-export default function LandingPage() {
+export default async function LandingPage() {
+  const session = await auth();
+  const user = session?.user;
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Nav */}
@@ -10,18 +15,42 @@ export default function LandingPage() {
             AI Resume Match
           </span>
           <div className="flex items-center gap-3 sm:gap-4">
-            <Link
-              href="/login"
-              className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/login?mode=signup"
-              className="rounded bg-cobalt px-3 py-1.5 text-sm font-medium text-white shadow-paper-sm transition-colors hover:bg-cobalt-hover sm:px-4 sm:py-2"
-            >
-              Get started
-            </Link>
+            {user ? (
+              <>
+                <Link
+                  href="/history"
+                  className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+                >
+                  History
+                </Link>
+                <span className="hidden max-w-[160px] truncate text-sm text-ink/50 sm:inline">
+                  {user.name ?? user.email}
+                </span>
+                <form action={signOutAction}>
+                  <button
+                    type="submit"
+                    className="rounded border border-ink/20 bg-paper px-3 py-1.5 text-sm font-medium text-ink shadow-paper-sm transition-colors hover:border-ink/40"
+                  >
+                    Sign out
+                  </button>
+                </form>
+              </>
+            ) : (
+              <>
+                <Link
+                  href="/login"
+                  className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+                >
+                  Log in
+                </Link>
+                <Link
+                  href="/login?mode=signup"
+                  className="rounded bg-cobalt px-3 py-1.5 text-sm font-medium text-white shadow-paper-sm transition-colors hover:bg-cobalt-hover sm:px-4 sm:py-2"
+                >
+                  Get started
+                </Link>
+              </>
+            )}
           </div>
         </div>
       </nav>

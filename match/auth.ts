@@ -8,6 +8,8 @@ import clientPromise from "@/lib/db";
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: MongoDBAdapter(clientPromise),
 
+  trustHost: true,
+
   session: { strategy: "jwt" },
 
   providers: [Google, GitHub],
