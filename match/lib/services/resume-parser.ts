@@ -1,5 +1,11 @@
 import mammoth from "mammoth";
-import pdfParse from "pdf-parse";
+import { createRequire } from "node:module";
+
+const require = createRequire(import.meta.url);
+const pdfParse = require("pdf-parse") as (
+  dataBuffer: Buffer,
+  options?: Record<string, unknown>
+) => Promise<{ text: string }>;
 
 export class UnsupportedFileTypeError extends Error {
   constructor(mimeType: string) {
@@ -11,7 +17,7 @@ export class UnsupportedFileTypeError extends Error {
 export class EmptyResumeTextError extends Error {
   constructor() {
     super(
-      "No readable text found in the uploaded file. It may be a scanned or image-based document.",
+      "No readable text found in the uploaded file. It may be a scanned or image-based document."
     );
     this.name = "EmptyResumeTextError";
   }

@@ -2,11 +2,16 @@
 
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
+import Results from "@/components/results";
+import type { AnalysisResult } from "@/types/index";
 
 export default function AnalyzePage() {
   const [resumeFile, setResumeFile] = useState<File | null>(null);
   const [jobDescription, setJobDescription] = useState("");
   const [isDragging, setIsDragging] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [result, setResult] = useState<AnalysisResult | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -32,7 +37,40 @@ export default function AnalyzePage() {
     if (file) setResumeFile(file);
   }, []);
 
-  const canAnalyze = resumeFile && jobDescription.trim().length > 0;
+  const canAnalyze = resumeFile && jobDescription.trim().length > 0 && !isLoading;
+
+  const handleAnalyze = useCallback(async () => {
+    if (!resumeFile || !jobDescription.trim()) return;
+
+    setIsLoading(true);
+    setError(null);
+    setResult(null);
+
+    try {
+      const formData = new FormData();
+      formData.append("resume", resumeFile);
+      formData.append("jobDescription", jobDescription.trim());
+
+      const res = await fetch("/api/analyze", {
+        method: "POST",
+        body: formData,
+      });
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.error || "Analysis failed. Please try again.");
+      }
+
+      setResult(data as AnalysisResult);
+    } catch (err) {
+      setError(
+        err instanceof Error ? err.message : "Something went wrong. Please try again."
+      );
+    } finally {
+      setIsLoading(false);
+    }
+  }, [resumeFile, jobDescription]);
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -167,7 +205,7 @@ export default function AnalyzePage() {
                     onClick={() => setJobDescription("")}
                     className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full border border-ink/10 bg-white text-xs font-medium text-coral shadow-paper-sm transition-colors hover:bg-coral/5"
                   >
-                    ×
+                    x
                   </button>
                 </div>
               ) : (
@@ -181,36 +219,71 @@ export default function AnalyzePage() {
             </div>
           </div>
 
+          {/* Error message */}
+          {error && (
+            <div className="mt-4 rounded border border-coral/30 bg-coral/5 px-4 py-3 text-sm text-coral">
+              {error}
+            </div>
+          )}
+
           {/* Analyze button */}
           <div className="mt-6 flex justify-center sm:mt-8">
             <button
               type="button"
               disabled={!canAnalyze}
+              onClick={handleAnalyze}
               className={`inline-flex w-full items-center justify-center gap-2 rounded px-6 py-3 text-sm font-medium shadow-paper transition-colors sm:w-auto sm:px-8 ${
                 canAnalyze
                   ? "bg-cobalt text-white hover:bg-cobalt-hover"
                   : "cursor-not-allowed bg-ink/10 text-ink/30"
               }`}
             >
-              <svg
-                className="h-4 w-4"
-                fill="none"
-                viewBox="0 0 24 24"
-                strokeWidth={1.5}
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"
-                />
-              </svg>
-              Analyze match
+              {isLoading ? (
+                <>
+                  <svg
+                    className="h-4 w-4 animate-spin"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
+                    <circle
+                      className="opacity-25"
+                      cx="12"
+                      cy="12"
+                      r="10"
+                      stroke="currentColor"
+                      strokeWidth="4"
+                    />
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    />
+                  </svg>
+                  Analyzing...
+                </>
+              ) : (
+                <>
+                  <svg
+                    className="h-4 w-4"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    strokeWidth={1.5}
+                    stroke="currentColor"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="m3.75 13.5 10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75Z"
+                    />
+                  </svg>
+                  Analyze match
+                </>
+              )}
             </button>
           </div>
 
           {/* Status hint */}
-          {!canAnalyze && (
+          {!canAnalyze && !isLoading && (
             <p className="mt-3 text-center text-xs text-ink/40">
               {!resumeFile && !jobDescription.trim()
                 ? "Upload a resume and paste a job description to continue."
@@ -219,6 +292,9 @@ export default function AnalyzePage() {
                   : "Paste a job description to continue."}
             </p>
           )}
+
+          {/* Results */}
+          {result && <Results result={result} />}
         </div>
       </main>
     </div>
