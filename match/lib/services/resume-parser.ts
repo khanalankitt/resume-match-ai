@@ -1,40 +1,5 @@
 import mammoth from "mammoth";
-// @ts-expect-error Types for pdf-parse are slightly mismatched
-import { PDFParse } from "pdf-parse";
-
-if (typeof globalThis.DOMMatrix === "undefined") {
-  class DOMMatrixShim {
-    a = 1;
-    b = 0;
-    c = 0;
-    d = 1;
-    e = 0;
-    f = 0;
-    constructor(_init?: string | number[]) {}
-    multiplySelf(): DOMMatrixShim { return this; }
-    translateSelf(): DOMMatrixShim { return this; }
-    scaleSelf(): DOMMatrixShim { return this; }
-    rotateSelf(): DOMMatrixShim { return this; }
-    inverseSelf(): DOMMatrixShim { return this; }
-    setTransformValue(): DOMMatrixShim { return this; }
-    invertSelf(): DOMMatrixShim { return this; }
-    multiply(): DOMMatrixShim { return new DOMMatrixShim(); }
-    translate(): DOMMatrixShim { return new DOMMatrixShim(); }
-    scale(): DOMMatrixShim { return new DOMMatrixShim(); }
-    rotate(): DOMMatrixShim { return new DOMMatrixShim(); }
-    inverse(): DOMMatrixShim { return new DOMMatrixShim(); }
-    transformPoint(): { x: number; y: number; z: number; w: number } {
-      return { x: 0, y: 0, z: 0, w: 1 };
-    }
-    get isIdentity() { return true; }
-    get is2D() { return true; }
-    toString() { return "matrix(1, 0, 0, 1, 0, 0)"; }
-  }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  globalThis.DOMMatrix = DOMMatrixShim as any;
-}
-
-
+import { getDocumentProxy, extractText } from "unpdf";
 
 export class UnsupportedFileTypeError extends Error {
   constructor(mimeType: string) {
@@ -65,9 +30,9 @@ export async function extractResumeText(file: File): Promise<string> {
   let text: string;
 
   if (file.type === PDF_TYPE || file.name.toLowerCase().endsWith(".pdf")) {
-    const parser = new PDFParse({ data: buffer });
-    const result = await parser.getText();
-    text = result.text;
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const { text: pages } = await extractText(pdf, { mergePages: true });
+    text = Array.isArray(pages) ? pages.join(" ") : pages;
   } else if (
     file.type === DOCX_TYPE ||
     file.name.toLowerCase().endsWith(".docx")
