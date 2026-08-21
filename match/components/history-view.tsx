@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useCallback, useState, useSyncExternalStore } from "react";
+import ConfirmModal from "@/components/confirm-modal";
 import Results from "@/components/results";
 import {
   clearHistory,
@@ -37,22 +38,26 @@ function formatDateTime(iso: string): string {
   return `${day} · ${time}`;
 }
 
-export default function HistoryView() {
+export default function HistoryView({ userName }: { userName?: string }) {
   const entries = useSyncExternalStore(
     subscribeToHistory,
     getHistorySnapshot,
     getServerSnapshot,
   );
   const [expandedId, setExpandedId] = useState<string | null>(null);
+  const [entryToDelete, setEntryToDelete] = useState<string | null>(null);
+  const [showClearConfirm, setShowClearConfirm] = useState(false);
 
   const handleDelete = useCallback((id: string) => {
     deleteFromHistory(id);
     setExpandedId((prev) => (prev === id ? null : prev));
+    setEntryToDelete(null);
   }, []);
 
   const handleClearAll = useCallback(() => {
     clearHistory();
     setExpandedId(null);
+    setShowClearConfirm(false);
   }, []);
 
   const toggleExpand = useCallback((id: string) => {
@@ -66,16 +71,23 @@ export default function HistoryView() {
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Link
             href="/"
-            className="font-display text-lg font-semibold tracking-tight sm:text-xl"
+            className="cursor-pointer font-display text-lg font-semibold tracking-tight sm:text-xl"
           >
             AI Resume Match
           </Link>
-          <Link
-            href="/analyze"
-            className="text-sm font-medium text-ink/60 transition-colors hover:text-ink"
-          >
-            New analysis
-          </Link>
+          <div className="flex items-center gap-4">
+            {userName && (
+              <span className="hidden max-w-[160px] truncate text-sm text-ink/50 sm:inline">
+                {userName}
+              </span>
+            )}
+            <Link
+              href="/analyze"
+              className="cursor-pointer text-sm font-medium text-ink/60 transition-colors hover:text-ink"
+            >
+              New analysis
+            </Link>
+          </div>
         </div>
       </nav>
 
@@ -94,8 +106,8 @@ export default function HistoryView() {
             {entries.length > 0 && (
               <button
                 type="button"
-                onClick={handleClearAll}
-                className="shrink-0 rounded border border-ink/20 bg-white px-3 py-1.5 text-xs font-medium text-coral shadow-paper-sm transition-colors hover:border-coral/40 sm:text-sm"
+                onClick={() => setShowClearConfirm(true)}
+                className="cursor-pointer shrink-0 rounded border border-ink/20 bg-white px-3 py-1.5 text-xs font-medium text-coral shadow-paper-sm transition-colors hover:border-coral/40 sm:text-sm"
               >
                 Clear all
               </button>
@@ -126,7 +138,7 @@ export default function HistoryView() {
               </p>
               <Link
                 href="/analyze"
-                className="mt-6 inline-flex items-center rounded bg-cobalt px-5 py-2.5 text-sm font-medium text-white shadow-paper transition-colors hover:bg-cobalt-hover"
+                className="cursor-pointer mt-6 inline-flex items-center rounded bg-cobalt px-5 py-2.5 text-sm font-medium text-white shadow-paper transition-colors hover:bg-cobalt-hover"
               >
                 Analyze a resume
               </Link>
@@ -174,14 +186,14 @@ export default function HistoryView() {
                           <button
                             type="button"
                             onClick={() => toggleExpand(entry.id)}
-                            className="text-xs font-medium text-cobalt transition-colors hover:text-cobalt-hover sm:text-sm"
+                            className="cursor-pointer text-xs font-medium text-cobalt transition-colors hover:text-cobalt-hover sm:text-sm"
                           >
                             {isExpanded ? "Hide report" : "View full report"}
                           </button>
                           <button
                             type="button"
-                            onClick={() => handleDelete(entry.id)}
-                            className="text-xs font-medium text-coral transition-colors hover:text-coral/80 sm:text-sm"
+                            onClick={() => setEntryToDelete(entry.id)}
+                            className="cursor-pointer text-xs font-medium text-coral transition-colors hover:text-coral/80 sm:text-sm"
                           >
                             Delete
                           </button>
@@ -200,6 +212,26 @@ export default function HistoryView() {
               })}
             </ul>
           )}
+          {/* Confirm Modals */}
+          <ConfirmModal
+            isOpen={showClearConfirm}
+            title="Clear all history"
+            message="Are you sure you want to delete all past analyses? This action cannot be undone."
+            confirmText="Delete all"
+            isDestructive={true}
+            onConfirm={handleClearAll}
+            onCancel={() => setShowClearConfirm(false)}
+          />
+
+          <ConfirmModal
+            isOpen={entryToDelete !== null}
+            title="Delete report"
+            message="Are you sure you want to delete this analysis report? This action cannot be undone."
+            confirmText="Delete"
+            isDestructive={true}
+            onConfirm={() => entryToDelete && handleDelete(entryToDelete)}
+            onCancel={() => setEntryToDelete(null)}
+          />
         </div>
       </main>
     </div>

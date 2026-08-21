@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { auth } from "@/auth";
 import { signOutAction } from "@/app/actions/auth";
+import SignOutButton from "@/components/sign-out-button";
 
 export default async function LandingPage() {
   const session = await auth();
@@ -19,33 +20,26 @@ export default async function LandingPage() {
               <>
                 <Link
                   href="/history"
-                  className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+                  className="cursor-pointer text-sm font-medium text-ink/70 transition-colors hover:text-ink"
                 >
                   History
                 </Link>
                 <span className="hidden max-w-[160px] truncate text-sm text-ink/50 sm:inline">
                   {user.name ?? user.email}
                 </span>
-                <form action={signOutAction}>
-                  <button
-                    type="submit"
-                    className="rounded border border-ink/20 bg-paper px-3 py-1.5 text-sm font-medium text-ink shadow-paper-sm transition-colors hover:border-ink/40"
-                  >
-                    Sign out
-                  </button>
-                </form>
+                <SignOutButton onSignOut={signOutAction} />
               </>
             ) : (
               <>
                 <Link
                   href="/login"
-                  className="text-sm font-medium text-ink/70 transition-colors hover:text-ink"
+                  className="cursor-pointer text-sm font-medium text-ink/70 transition-colors hover:text-ink"
                 >
                   Log in
                 </Link>
                 <Link
                   href="/login?mode=signup"
-                  className="rounded bg-cobalt px-3 py-1.5 text-sm font-medium text-white shadow-paper-sm transition-colors hover:bg-cobalt-hover sm:px-4 sm:py-2"
+                  className="cursor-pointer rounded bg-cobalt px-3 py-1.5 text-sm font-medium text-white shadow-paper-sm transition-colors hover:bg-cobalt-hover sm:px-4 sm:py-2"
                 >
                   Get started
                 </Link>
@@ -70,15 +64,9 @@ export default async function LandingPage() {
           <div className="mt-8 flex flex-col items-center gap-3 sm:mt-10 sm:flex-row sm:justify-center">
             <Link
               href="/analyze"
-              className="inline-flex w-full items-center justify-center rounded bg-cobalt px-6 py-3 text-base font-medium text-white shadow-paper transition-colors hover:bg-cobalt-hover sm:w-auto"
+              className="cursor-pointer inline-flex w-full items-center justify-center rounded bg-cobalt px-6 py-3 text-base font-medium text-white shadow-paper transition-colors hover:bg-cobalt-hover sm:w-auto"
             >
               Analyze a resume
-            </Link>
-            <Link
-              href="/login"
-              className="inline-flex w-full items-center justify-center rounded border border-ink/20 bg-paper px-6 py-3 text-base font-medium text-ink shadow-paper-sm transition-colors hover:border-ink/40 sm:w-auto"
-            >
-              Create an account
             </Link>
           </div>
         </div>
@@ -224,7 +212,7 @@ export default async function LandingPage() {
           </p>
           <Link
             href="/analyze"
-            className="mt-6 inline-flex items-center rounded bg-ink px-6 py-3 text-base font-medium text-paper shadow-paper transition-colors hover:bg-ink/90 sm:mt-8"
+            className="cursor-pointer mt-6 inline-flex items-center rounded bg-ink px-6 py-3 text-base font-medium text-paper shadow-paper transition-colors hover:bg-ink/90 sm:mt-8"
           >
             Try it now — free
           </Link>

@@ -21,6 +21,7 @@ export default function AnalyzeView() {
     const file = e.dataTransfer.files[0];
     if (file && (file.type === "application/pdf" || file.name.endsWith(".docx"))) {
       setResumeFile(file);
+      setResult(null);
     }
   }, []);
 
@@ -35,10 +36,13 @@ export default function AnalyzeView() {
 
   const handleFileChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
-    if (file) setResumeFile(file);
+    if (file) {
+      setResumeFile(file);
+      setResult(null);
+    }
   }, []);
 
-  const canAnalyze = resumeFile && jobDescription.trim().length > 0 && !isLoading;
+  const canAnalyze = resumeFile && jobDescription.trim().length > 0 && !isLoading && !result;
 
   const handleAnalyze = useCallback(async () => {
     if (!resumeFile || !jobDescription.trim()) return;
@@ -85,13 +89,13 @@ export default function AnalyzeView() {
         <div className="mx-auto flex max-w-6xl items-center justify-between">
           <Link
             href="/"
-            className="font-display text-lg font-semibold tracking-tight sm:text-xl"
+            className="cursor-pointer font-display text-lg font-semibold tracking-tight sm:text-xl"
           >
             AI Resume Match
           </Link>
           <Link
             href="/history"
-            className="text-sm font-medium text-ink/60 transition-colors hover:text-ink"
+            className="cursor-pointer text-sm font-medium text-ink/60 transition-colors hover:text-ink"
           >
             History
           </Link>
@@ -144,8 +148,11 @@ export default function AnalyzeView() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setResumeFile(null)}
-                    className="shrink-0 text-xs font-medium text-coral transition-colors hover:text-coral/80"
+                    onClick={() => {
+                      setResumeFile(null);
+                      setResult(null);
+                    }}
+                    className="cursor-pointer shrink-0 text-xs font-medium text-coral transition-colors hover:text-coral/80"
                   >
                     Remove
                   </button>
@@ -208,8 +215,11 @@ export default function AnalyzeView() {
                   </div>
                   <button
                     type="button"
-                    onClick={() => setJobDescription("")}
-                    className="absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full border border-ink/10 bg-white text-xs font-medium text-coral shadow-paper-sm transition-colors hover:bg-coral/5"
+                    onClick={() => {
+                      setJobDescription("");
+                      setResult(null);
+                    }}
+                    className="cursor-pointer absolute -top-2 -right-2 flex h-6 w-6 items-center justify-center rounded-full border border-ink/10 bg-white text-xs font-medium text-coral shadow-paper-sm transition-colors hover:bg-coral/5"
                   >
                     x
                   </button>
@@ -217,7 +227,10 @@ export default function AnalyzeView() {
               ) : (
                 <textarea
                   value={jobDescription}
-                  onChange={(e) => setJobDescription(e.target.value)}
+                  onChange={(e) => {
+                    setJobDescription(e.target.value);
+                    setResult(null);
+                  }}
                   placeholder="Paste the full job description here..."
                   className="h-[200px] w-full resize-none rounded border border-ink/15 bg-paper p-3 text-sm leading-relaxed text-ink/70 outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 sm:h-[300px] sm:p-4"
                 />
@@ -240,7 +253,7 @@ export default function AnalyzeView() {
               onClick={handleAnalyze}
               className={`inline-flex w-full items-center justify-center gap-2 rounded px-6 py-3 text-sm font-medium shadow-paper transition-colors sm:w-auto sm:px-8 ${
                 canAnalyze
-                  ? "bg-cobalt text-white hover:bg-cobalt-hover"
+                  ? "cursor-pointer bg-cobalt text-white hover:bg-cobalt-hover"
                   : "cursor-not-allowed bg-ink/10 text-ink/30"
               }`}
             >
