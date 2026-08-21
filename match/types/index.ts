@@ -35,3 +35,11 @@ export interface AnalysisResult {
   suggestions: string[];
   ats: AtsScore;
 }
+
+export interface HistoryEntry {
+  id: string;
+  createdAt: string;
+  resumeFileName: string;
+  jobDescription: string;
+  result: AnalysisResult;
+}

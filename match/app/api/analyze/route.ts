@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/auth";
 import {
   extractResumeText,
   UnsupportedFileTypeError,
@@ -8,14 +9,44 @@ import {
   analyzeResumeAgainstJob,
   AIResponseParseError,
 } from "@/lib/services/ai";
+import {
+  checkAndRecordAnalysis,
+  RateLimitExceededError,
+} from "@/lib/services/rate-limit";
 
-export const runtime = "nodejs"; 
-export const maxDuration = 60; 
+export const runtime = "nodejs";
+export const maxDuration = 60;
 
 const MAX_FILE_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
 const MAX_JOB_DESCRIPTION_LENGTH = 20000;
 
 export async function POST(request: NextRequest) {
+  const session = await auth();
+
+  if (!session?.user?.id) {
+    return NextResponse.json(
+      { error: "Sign in to analyze a resume." },
+      { status: 401 },
+    );
+  }
+
+  // Recorded up front (not after success) so two simultaneous requests from
+  // the same user can't both pass the check before either is logged.
+  try {
+    await checkAndRecordAnalysis(session.user.id);
+  } catch (err) {
+    if (err instanceof RateLimitExceededError) {
+      return NextResponse.json(
+        {
+          error: err.message,
+          retryAfterMs: err.retryAfterMs,
+        },
+        { status: 429 },
+      );
+    }
+    throw err;
+  }
+
   let formData: FormData;
   try {
     formData = await request.formData();
@@ -78,8 +109,12 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: err.message }, { status: 422 });
     }
     console.error("Resume parsing failed:", err);
+    const detail =
+      process.env.NODE_ENV !== "production" && err instanceof Error
+        ? err.message
+        : undefined;
     return NextResponse.json(
-      { error: "Could not read the uploaded resume file." },
+      { error: "Could not read the uploaded resume file.", detail },
       { status: 422 },
     );
   }

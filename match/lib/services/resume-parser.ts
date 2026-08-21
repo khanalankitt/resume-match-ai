@@ -1,11 +1,38 @@
 import mammoth from "mammoth";
-import { createRequire } from "node:module";
 
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse") as (
-  dataBuffer: Buffer,
-  options?: Record<string, unknown>
-) => Promise<{ text: string }>;
+if (typeof globalThis.DOMMatrix === "undefined") {
+  class DOMMatrixShim {
+    a = 1;
+    b = 0;
+    c = 0;
+    d = 1;
+    e = 0;
+    f = 0;
+    constructor(_init?: string | number[]) {}
+    multiplySelf(): DOMMatrixShim { return this; }
+    translateSelf(): DOMMatrixShim { return this; }
+    scaleSelf(): DOMMatrixShim { return this; }
+    rotateSelf(): DOMMatrixShim { return this; }
+    inverseSelf(): DOMMatrixShim { return this; }
+    setTransformValue(): DOMMatrixShim { return this; }
+    invertSelf(): DOMMatrixShim { return this; }
+    multiply(): DOMMatrixShim { return new DOMMatrixShim(); }
+    translate(): DOMMatrixShim { return new DOMMatrixShim(); }
+    scale(): DOMMatrixShim { return new DOMMatrixShim(); }
+    rotate(): DOMMatrixShim { return new DOMMatrixShim(); }
+    inverse(): DOMMatrixShim { return new DOMMatrixShim(); }
+    transformPoint(): { x: number; y: number; z: number; w: number } {
+      return { x: 0, y: 0, z: 0, w: 1 };
+    }
+    get isIdentity() { return true; }
+    get is2D() { return true; }
+    toString() { return "matrix(1, 0, 0, 1, 0, 0)"; }
+  }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  globalThis.DOMMatrix = DOMMatrixShim as any;
+}
+
+const { default: pdfParse } = await import("pdf-parse");
 
 export class UnsupportedFileTypeError extends Error {
   constructor(mimeType: string) {
@@ -17,7 +44,7 @@ export class UnsupportedFileTypeError extends Error {
 export class EmptyResumeTextError extends Error {
   constructor() {
     super(
-      "No readable text found in the uploaded file. It may be a scanned or image-based document."
+      "No readable text found in the uploaded file. It may be a scanned or image-based document.",
     );
     this.name = "EmptyResumeTextError";
   }

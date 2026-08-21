@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useCallback, useRef, useState } from "react";
 import Results from "@/components/results";
+import { saveToHistory } from "@/lib/history";
 import type { AnalysisResult } from "@/types/index";
 
 export default function AnalyzePage() {
@@ -63,6 +64,11 @@ export default function AnalyzePage() {
       }
 
       setResult(data as AnalysisResult);
+      saveToHistory({
+        resumeFileName: resumeFile.name,
+        jobDescription: jobDescription.trim(),
+        result: data as AnalysisResult,
+      });
     } catch (err) {
       setError(
         err instanceof Error ? err.message : "Something went wrong. Please try again."
