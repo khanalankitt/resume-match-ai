@@ -1,4 +1,5 @@
 import mammoth from "mammoth";
+// @ts-expect-error Types for pdf-parse are slightly mismatched
 import { PDFParse } from "pdf-parse";
 
 if (typeof globalThis.DOMMatrix === "undefined") {
