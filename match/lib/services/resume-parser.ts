@@ -1,4 +1,5 @@
 import mammoth from "mammoth";
+import { PDFParse } from "pdf-parse";
 
 if (typeof globalThis.DOMMatrix === "undefined") {
   class DOMMatrixShim {
@@ -32,7 +33,7 @@ if (typeof globalThis.DOMMatrix === "undefined") {
   globalThis.DOMMatrix = DOMMatrixShim as any;
 }
 
-const { default: pdfParse } = await import("pdf-parse");
+
 
 export class UnsupportedFileTypeError extends Error {
   constructor(mimeType: string) {
@@ -63,7 +64,8 @@ export async function extractResumeText(file: File): Promise<string> {
   let text: string;
 
   if (file.type === PDF_TYPE || file.name.toLowerCase().endsWith(".pdf")) {
-    const result = await pdfParse(buffer);
+    const parser = new PDFParse({ data: buffer });
+    const result = await parser.getText();
     text = result.text;
   } else if (
     file.type === DOCX_TYPE ||

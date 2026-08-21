@@ -4,7 +4,7 @@ import User from "@/models/user";
 
 export { RateLimitExceededError };
 
-const MAX_CHECKS_PER_HOUR = 2;
+const MAX_CHECKS_PER_HOUR = 20;
 const WINDOW_MS = 60 * 60 * 1000; // 1 hour
 
 /**
