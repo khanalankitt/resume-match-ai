@@ -1,17 +1,26 @@
 import NextAuth from "next-auth";
-import { authConfig } from "./auth.config";
 import { NextResponse } from "next/server";
+
+import { authConfig } from "./auth.config";
 
 const { auth } = NextAuth(authConfig);
 
-export default auth((req) => {
+export const proxy = auth((req) => {
   const isLoggedIn = !!req.auth;
   const { nextUrl } = req;
-  const isProtectedRoute = nextUrl.pathname.startsWith("/analyze") || nextUrl.pathname.startsWith("/history");
+
+  const isProtectedRoute =
+    nextUrl.pathname.startsWith("/analyze") ||
+    nextUrl.pathname.startsWith("/history");
 
   if (isProtectedRoute && !isLoggedIn) {
     const redirectUrl = new URL("/login", nextUrl.origin);
-    redirectUrl.searchParams.set("callbackUrl", nextUrl.pathname);
+
+    redirectUrl.searchParams.set(
+      "callbackUrl",
+      nextUrl.pathname
+    );
+
     return NextResponse.redirect(redirectUrl);
   }
 
