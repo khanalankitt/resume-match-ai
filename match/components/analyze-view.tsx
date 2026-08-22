@@ -206,13 +206,17 @@ export default function AnalyzeView() {
                 Job Description
               </span>
 
-              {jobDescription ? (
-                <div className="relative">
-                  <div className="max-h-[250px] overflow-y-auto rounded border border-ink/10 bg-paper p-3 sm:max-h-[400px] sm:p-4">
-                    <p className="whitespace-pre-wrap text-sm leading-relaxed text-ink/70">
-                      {jobDescription}
-                    </p>
-                  </div>
+              <div className="relative">
+                <textarea
+                  value={jobDescription}
+                  onChange={(e) => {
+                    setJobDescription(e.target.value);
+                    setResult(null);
+                  }}
+                  placeholder="Paste the full job description here..."
+                  className="h-[200px] w-full resize-none rounded border border-ink/15 bg-paper p-3 text-sm leading-relaxed text-ink/70 outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 sm:h-[300px] sm:p-4"
+                />
+                {jobDescription && (
                   <button
                     type="button"
                     onClick={() => {
@@ -223,18 +227,8 @@ export default function AnalyzeView() {
                   >
                     x
                   </button>
-                </div>
-              ) : (
-                <textarea
-                  value={jobDescription}
-                  onChange={(e) => {
-                    setJobDescription(e.target.value);
-                    setResult(null);
-                  }}
-                  placeholder="Paste the full job description here..."
-                  className="h-[200px] w-full resize-none rounded border border-ink/15 bg-paper p-3 text-sm leading-relaxed text-ink/70 outline-none transition-colors placeholder:text-ink/30 focus:border-cobalt focus:ring-2 focus:ring-cobalt/20 sm:h-[300px] sm:p-4"
-                />
-              )}
+                )}
+              </div>
             </div>
           </div>
 
